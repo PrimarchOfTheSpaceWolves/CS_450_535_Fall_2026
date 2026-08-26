@@ -18,3 +18,7 @@ The rest of the dependencies will be automatically fetched by CMake.
 ### BasicSquare
 
 This application should show a multi-color quad on the screen with a cyan background.
+
+### SoftwareRenderer
+
+This application shows a repeating red pattern that follows the mouse X movement.  The sine wave period is hardcoded to 200, and the ```hostFramebuffer``` is appropriately resized when the window resizes.
