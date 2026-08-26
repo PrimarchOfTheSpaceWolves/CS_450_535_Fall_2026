@@ -130,7 +130,7 @@ int main(int argc, char **argv) {
 
     // Set app name
     string appName = "BasicSquare";
-    string windowName = "Prometheus: " + appName;
+    string windowName = appName + ": realemj";
 
     ///////////////////////////////////////////////////////////////////////
     // GLFW
