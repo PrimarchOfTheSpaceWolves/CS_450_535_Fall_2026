@@ -240,15 +240,15 @@ int main(int argc, char **argv) {
         // Create host data  
         vector<pro::HostMesh<ProVertex>> allHostMeshes {};
         
-        pro::HostMesh<ProVertex> simpleQuad {};
-        simpleQuad.vertices = {
+        pro::HostMesh<ProVertex> simpleShape {};
+        simpleShape.vertices = {
             {{-0.5f, -0.5f, 0.5f},  {1,0,0,1}},
             {{0.5f, -0.5f, 0.5f},   {0,1,0,1}},
             {{0.5f, 0.5f, 0.5f},    {0,0,1,1}},
             {{-0.5f, 0.5f, 0.5f},   {1,1,1,1}}
         };
-        simpleQuad.indices = { 0, 1, 2, 0, 2, 3 };        
-        allHostMeshes.push_back(simpleQuad);
+        simpleShape.indices = { 0, 1, 2, 0, 2, 3 };        
+        allHostMeshes.push_back(simpleShape);
 
         // Create the Vulkan meshes
         vector<pro::VulkanMesh> allMeshes {};    
