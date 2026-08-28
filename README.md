@@ -19,6 +19,10 @@ The rest of the dependencies will be automatically fetched by CMake.
 
 This application should show a multi-color quad on the screen with a cyan background.
 
+<img title="BasicSquare screenshot" alt="BasicSquare screenshot" src="./screenshots/BasicSquare.png" width="320">
+
 ### SoftwareRenderer
 
 This application shows a repeating red pattern that follows the mouse X movement.  The sine wave period is hardcoded to 200, and the ```hostFramebuffer``` is appropriately resized when the window resizes.
+
+<img title="SoftwareRenderer screenshot" alt="SoftwareRenderer screenshot" src="./screenshots/SoftwareRenderer.png" width="320">
