@@ -26,3 +26,4 @@ This application should show a multi-color quad on the screen with a cyan backgr
 This application shows a repeating red pattern that follows the mouse X movement.  The sine wave period is hardcoded to 200, and the ```hostFramebuffer``` is appropriately resized when the window resizes.
 
 <img title="SoftwareRenderer screenshot" alt="SoftwareRenderer screenshot" src="./screenshots/SoftwareRenderer.png" width="320">
+
