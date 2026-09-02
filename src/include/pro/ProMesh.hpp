@@ -85,12 +85,12 @@ namespace pro {
 
         pendingCopies.push_back(PendingBufferCopy(  mesh.vertices, 
                                                     hostMesh.vertices.data(), 
-                                                    vk::PipelineStageFlags2::eVertexInput, 
+                                                    vk::PipelineStageFlagBits2::eVertexInput, 
                                                     vk::AccessFlagBits2::eVertexAttributeRead));
 
         pendingCopies.push_back(PendingBufferCopy(  mesh.indices, 
                                                     hostMesh.indices.data(), 
-                                                    vk::PipelineStageFlags2::eVertexInput, 
+                                                    vk::PipelineStageFlagBits2::eVertexInput, 
                                                     vk::AccessFlagBits2::eIndexRead));
         
         // Still set index and vertex count
