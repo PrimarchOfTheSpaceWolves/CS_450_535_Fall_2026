@@ -48,6 +48,11 @@ namespace pro {
         // Vulkan instance
         string appName = "ProApp";
         string engineName = "ProEngine";
+
+        // Instance extensions and flags
+        vector<string> instExtensions {};
+        vk::InstanceCreateFlags instFlags {};
+
         
         // Vulkan physical device requirements
         DeviceRequirements deviceRequirements {};
@@ -152,7 +157,11 @@ namespace pro {
             vector<string> requiredExtensions {};
             auto windowExtensions = createInfo.getWindowExtensionsFunc(context_);
             requiredExtensions.insert(requiredExtensions.end(), windowExtensions.begin(), windowExtensions.end());
-            requiredExtensions.push_back(vk::EXTDebugUtilsExtensionName);              
+            requiredExtensions.push_back(vk::EXTDebugUtilsExtensionName); 
+            
+            requiredExtensions.insert(  requiredExtensions.end(), 
+                                        createInfo.instExtensions.begin(), 
+                                        createInfo.instExtensions.end());
 
             if(!checkAllSupported(supportedExtensions, requiredExtensions, "Extension")) {
                 print_and_throw_error("VulkanCore", "Cannot support requested extensions!");
@@ -201,6 +210,8 @@ namespace pro {
                                     .setPpEnabledExtensionNames(extensionCharList.data())
                                     .setEnabledLayerCount(layerCharList.size())
                                     .setPpEnabledLayerNames(layerCharList.data());
+
+            instCreateInfo.flags |= createInfo.instFlags;
 
             instance_ = vk::raii::Instance(context_, instCreateInfo);
 
