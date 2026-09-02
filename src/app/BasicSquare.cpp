@@ -176,6 +176,10 @@ int main(int argc, char **argv) {
         // If you encounter errors with compute and/or transfer queue creation, try these:
         //createInfo.deviceRequirements.requireComputeQueue = false;
         //createInfo.deviceRequirements.requireTransferQueue = false;
+
+        // For Mac users, uncomment these lines
+        //createInfo.instExtensions.push_back(vk::KHRPortabilityEnumerationExtensionName);
+        //createInfo.instFlags |= vk::InstanceCreateFlagBits::eEnumeratePortabilityKHR;  
         
         // Set GLFW functions
         prepareVulkanInitGLFWFunctions(createInfo, window);
