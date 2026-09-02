@@ -7,7 +7,7 @@ namespace pro {
     // CONSTANTS AND ALIASES
     ///////////////////////////////////////////////////////////////////////////
 
-    template<typename T> inline constexpr std::size_t featureCnt;
+    template<typename T> inline constexpr std::size_t featureCnt = 0;
 
     template<> inline constexpr std::size_t
     featureCnt<vk::PhysicalDeviceFeatures> = 55;
