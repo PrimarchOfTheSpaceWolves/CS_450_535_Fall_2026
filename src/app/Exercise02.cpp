@@ -245,9 +245,16 @@ int main(int argc, char **argv) {
             {{-0.5f, -0.5f, 0.5f},  {1,0,0,1}},
             {{0.5f, -0.5f, 0.5f},   {0,1,0,1}},
             {{0.5f, 0.5f, 0.5f},    {0,0,1,1}},
-            {{-0.5f, 0.5f, 0.5f},   {1,1,1,1}}
+            {{-0.5f, 0.5f, 0.5f},   {1,1,1,1}},
+            {{0.75f, 0.0f, 0.5f},   {1,0,1,1}},
+            {{0.0f, 1.5f, 0.5f},   {0,0.5f,0,1}}
         };
-        simpleShape.indices = { 0, 1, 2, 0, 2, 3 };        
+        simpleShape.indices = { 
+            0, 1, 2, 
+            0, 2, 3,
+            1, 4, 2,
+            3, 2, 5 
+        };        
         allHostMeshes.push_back(simpleShape);
 
         // Create the Vulkan meshes
