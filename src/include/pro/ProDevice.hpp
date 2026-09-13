@@ -40,8 +40,8 @@ namespace pro {
         int minMinorVersion = 4;
 
         // Require certain queues?
-        bool requireComputeQueue = true;
-        bool requireTransferQueue = true;
+        bool requireDedicatedComputeQueue = true;
+        bool requireDedicatedTransferQueue = true;
 
         // Required extensions
         vector<string> extensions {};
@@ -239,15 +239,15 @@ namespace pro {
             }
             
             // Check queue support...            
-            bool supportsGraphics = checkForQueue(physicalDevice, surface, {vk::QueueFlagBits::eGraphics}, {});
-            bool supportsPresent = checkForQueue(physicalDevice, surface, {}, {}, true);            
-            bool supportsCompute = checkForQueue(physicalDevice, surface, {vk::QueueFlagBits::eCompute}, {vk::QueueFlagBits::eGraphics});
-            bool supportsTransfer = checkForQueue(physicalDevice, surface, {vk::QueueFlagBits::eTransfer}, {vk::QueueFlagBits::eCompute, vk::QueueFlagBits::eGraphics});
+            bool supportsGraphics = checkForQueueFamily(physicalDevice, surface, {vk::QueueFlagBits::eGraphics}, {});
+            bool supportsPresent = checkForQueueFamily(physicalDevice, surface, {}, {}, true);            
+            bool supportsCompute = checkForQueueFamily(physicalDevice, surface, {vk::QueueFlagBits::eCompute}, {vk::QueueFlagBits::eGraphics});
+            bool supportsTransfer = checkForQueueFamily(physicalDevice, surface, {vk::QueueFlagBits::eTransfer}, {vk::QueueFlagBits::eCompute, vk::QueueFlagBits::eGraphics});
             
             if( !supportsGraphics ||
                 !supportsPresent ||
-                (requirements.requireComputeQueue && !supportsCompute) ||
-                (requirements.requireTransferQueue && !supportsTransfer)) {
+                (requirements.requireDedicatedComputeQueue && !supportsCompute) ||
+                (requirements.requireDedicatedTransferQueue && !supportsTransfer)) {
                 // Does not support requested queues!
                 return false;
             }

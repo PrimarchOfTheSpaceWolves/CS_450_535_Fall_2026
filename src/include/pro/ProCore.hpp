@@ -254,16 +254,16 @@ namespace pro {
             // Get queue family indices
             // NOTE: Try to get SAME queue for graphics and present, but fall back to separate if necessary
             
-            int graphicsIndex = findQueueIndex(physicalDevice_, surface_, {vk::QueueFlagBits::eGraphics}, {}, true);
+            int graphicsIndex = findQueueFamilyIndex(physicalDevice_, surface_, {vk::QueueFlagBits::eGraphics}, {}, true);
             int presentIndex = graphicsIndex;
             
             if(graphicsIndex == INVALID_QUEUE) {
-                graphicsIndex = findQueueIndex(physicalDevice_, surface_, {vk::QueueFlagBits::eGraphics}, {});
-                presentIndex = findQueueIndex(physicalDevice_, surface_, {}, {}, true);           
+                graphicsIndex = findQueueFamilyIndex(physicalDevice_, surface_, {vk::QueueFlagBits::eGraphics}, {});
+                presentIndex = findQueueFamilyIndex(physicalDevice_, surface_, {}, {}, true);           
             }
 
-            int computeIndex = findQueueIndex(physicalDevice_, surface_, {vk::QueueFlagBits::eCompute}, {vk::QueueFlagBits::eGraphics});
-            int transferIndex = findQueueIndex(physicalDevice_, surface_, {vk::QueueFlagBits::eTransfer}, {vk::QueueFlagBits::eCompute, vk::QueueFlagBits::eGraphics});
+            int computeIndex = findQueueFamilyIndex(physicalDevice_, surface_, {vk::QueueFlagBits::eCompute}, {vk::QueueFlagBits::eGraphics});
+            int transferIndex = findQueueFamilyIndex(physicalDevice_, surface_, {vk::QueueFlagBits::eTransfer}, {vk::QueueFlagBits::eCompute, vk::QueueFlagBits::eGraphics});
                         
             // Set up queue creation info
             vector<vk::DeviceQueueCreateInfo> queueCreateInfos {};
@@ -281,11 +281,34 @@ namespace pro {
                                         .setPQueuePriorities(&queuePriority)); 
             }
 
+            // For compute and transfer, here is the ordering of preference:
+            // 1. Dedicated
+            // 2. Graphics, but separate queue
+            // 3. Graphics (same queue)
+            // Note that we wouldn't have invalid compute/transfer queues
+            // at this point if we required it, because then we wouldn't 
+            // have found a valid device.
+            
+            // Get how many graphics queues we have left (already used one)
+            int remainingGraphicsQueues = getQueueCount(physicalDevice_, graphicsIndex);
+            remainingGraphicsQueues--;
+        
+
             if(computeIndex != INVALID_QUEUE) {
                 queueCreateInfos.push_back(vk::DeviceQueueCreateInfo()
                                         .setQueueFamilyIndex(computeIndex)
                                         .setQueueCount(1)
                                         .setPQueuePriorities(&queuePriority));     
+            }
+            else {
+                // Do we have enough queues to go around?
+                if(remainingGraphicsQueues > 0) {
+                    queueCreateInfos.push_back(vk::DeviceQueueCreateInfo()
+                                        .setQueueFamilyIndex(graphicsIndex)
+                                        .setQueueCount(1)
+                                        .setPQueuePriorities(&queuePriority));
+                    remainingGraphicsQueues--;
+                }
             }
 
             if(transferIndex != INVALID_QUEUE) {
@@ -293,6 +316,16 @@ namespace pro {
                                         .setQueueFamilyIndex(transferIndex)
                                         .setQueueCount(1)
                                         .setPQueuePriorities(&queuePriority));     
+            }
+            else {
+                // Do we have enough queues to go around?
+                if(remainingGraphicsQueues > 0) {
+                    queueCreateInfos.push_back(vk::DeviceQueueCreateInfo()
+                                        .setQueueFamilyIndex(graphicsIndex)
+                                        .setQueueCount(1)
+                                        .setPQueuePriorities(&queuePriority));
+                    remainingGraphicsQueues--;
+                }
             }
             
             // Create logical device
@@ -319,16 +352,24 @@ namespace pro {
             if(computeIndex != INVALID_QUEUE) {
                 computeQueue_ = VulkanQueue(device_, computeIndex);
             }
+            else {
+                // We couldn't create any flavor of compute, so use graphics queue
+                computeQueue_ = graphicsQueue_;
+            }
 
             if(transferIndex != INVALID_QUEUE) {
                 transferQueue_ = VulkanQueue(device_, transferIndex);
+            }
+            else {
+                // We couldn't create any flavor of transfer, so use graphics queue
+                transferQueue_ = graphicsQueue_;
             }
 
             printQueues();
 
             // Check if desired swapchain format is available
             if(!checkSwapSurfaceFormat(physicalDevice_, surface_, createInfo.desiredSwapchainFormat)) {
-                print_and_throw_error("VulkanCore", "Desired swapchain format not avialable!"); 
+                print_and_throw_error("VulkanCore", "Desired swapchain format not available!"); 
             }
 
             // Set desired format
@@ -391,8 +432,8 @@ namespace pro {
         const vma::raii::Allocator& allocator() const noexcept { return allocator_; };
         const vector<VulkanImage>& depthImages() const noexcept { return depthImages_; };
 
-        const bool isComputeQueueValid() const noexcept { return computeQueue_.is_valid; }
-        const bool isTransferQueueValid() const noexcept { return transferQueue_.is_valid; }
+        const bool isComputeQueueDedicated() const noexcept { return !computeQueue_.fromSameFamily(graphicsQueue_); }
+        const bool isTransferQueueDedicated() const noexcept { return !transferQueue_.fromSameFamily(graphicsQueue_); }
 
         // Setter
         void setOnResizeFunc(OnResizeFunc onResizeFunc) {
@@ -427,44 +468,28 @@ namespace pro {
 
             print_header_line('*', "QUEUES:", DEFAULT_MAX_LINE_WIDTH, os);         
 
-            os << "Graphics: " << graphicsQueue_.index << endl;
-            os << "Present: " << presentQueue_.index << endl;
-            if(computeQueue_.is_valid) os << "Compute: " << computeQueue_.index << endl;
-            if(transferQueue_.is_valid) os << "Transfer: " << transferQueue_.index << endl;
-            print_header_line('-', "", DEFAULT_MAX_LINE_WIDTH, os);                     
-            if(computeQueue_.is_valid) {                
-                if(isComputeDedicated()) {
-                    os << "Using dedicated compute queue." << endl;
-                }
-                else {
-                    os << "Compute queue same as graphics queue." << endl;
-                }
-            }
-            else {
-                os << "Compute queue NOT valid." << endl;
-            }
-
-            if(transferQueue_.is_valid) {
-                if(isTransferDedicated()) {
-                    os << "Using dedicated transfer queue." << endl;
-                }
-                else {
-                    os << "Transfer queue same as graphics queue." << endl;
-                }
-            }
-            else {
-                os << "Transfer queue NOT valid." << endl;
-            }
-            
+            os << "Graphics: " << graphicsQueue_ << endl;
+            os << "Present: " << presentQueue_ << endl;
+            os << "Compute: " << computeQueue_ << endl;
+            os << "Transfer: " << transferQueue_ << endl;
+            print_header_line('-', "", DEFAULT_MAX_LINE_WIDTH, os);
+            printQueueDedicatedStatus(computeQueue_, "Compute", os);
+            printQueueDedicatedStatus(transferQueue_, "Transfer", os);            
             print_header_line('*', "", DEFAULT_MAX_LINE_WIDTH, os);              
         };
 
-        bool isComputeDedicated() {
-            return (graphicsQueue_.queue != computeQueue_.queue);
-        };
-
-        bool isTransferDedicated() {
-            return (graphicsQueue_.queue != transferQueue_.queue);
+        void printQueueDedicatedStatus( const VulkanQueue &queue, 
+                                        const string queueName, 
+                                        std::ostream& os = std::cout) {
+            if(!queue.fromSameFamily(graphicsQueue_)) {
+                os << "Using dedicated " << queueName << " queue." << endl;
+            }
+            else if(queue.queueIndex != graphicsQueue_.queueIndex) {
+                os << queueName << " queue in graphics family." << endl;
+            }
+            else {
+                os << queueName << " queue same as graphics queue." << endl;
+            }            
         };
 
     private:   
@@ -496,7 +521,7 @@ namespace pro {
         bool createSwapchain() {
             // Check what we need in terms of queue sharing
             vk::SharingMode swapSharingMode = vk::SharingMode::eExclusive;
-            if(presentQueue_.index != graphicsQueue_.index) {
+            if(presentQueue_.familyIndex != graphicsQueue_.familyIndex) {
                 swapSharingMode = vk::SharingMode::eConcurrent;
             }
 

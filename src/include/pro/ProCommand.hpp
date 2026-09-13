@@ -9,11 +9,11 @@ namespace pro {
 
     inline vk::raii::CommandPool createCommandPool(
         const vk::raii::Device &device,
-        unsigned int queueIndex,
+        unsigned int queueFamilyIndex,
         vk::CommandPoolCreateFlags flags = vk::CommandPoolCreateFlagBits::eTransient) {
 
         return move(vk::raii::CommandPool(
-            device, vk::CommandPoolCreateInfo(flags, queueIndex)));        
+            device, vk::CommandPoolCreateInfo(flags, queueFamilyIndex)));        
     };
 
     inline vk::raii::CommandBuffer createCommandBuffer(
@@ -72,7 +72,7 @@ namespace pro {
             this->targetQueue = queue;
 
             // Create necessary pieces
-            this->commandPool = createCommandPool(*refDevice, queue.index, poolFlags);
+            this->commandPool = createCommandPool(*refDevice, queue.familyIndex, poolFlags);
             this->commandBuffer = createCommandBuffer(*refDevice, commandPool);
             this->finishedFence = createFence(*refDevice);
 
@@ -143,7 +143,7 @@ namespace pro {
             commandPool.reset();
             
             // Begin recording
-            commandBuffer.begin(vk::CommandBufferBeginInfo());
+            commandBuffer.begin(vk::CommandBufferBeginInfo(flags));
         };
 
         void endRecording() const {

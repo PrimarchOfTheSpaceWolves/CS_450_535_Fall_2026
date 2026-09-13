@@ -15,16 +15,28 @@ namespace pro {
 
     struct VulkanQueue {
         vk::raii::Queue queue = nullptr;
-        unsigned int index = 0;
-        bool is_valid = false;
-
+        unsigned int familyIndex = 0;
+        unsigned int queueIndex = 0;
+        
         VulkanQueue() {};
         
-        VulkanQueue(const vk::raii::Device &device, unsigned int familyIndex) {
-            queue = vk::raii::Queue(device, familyIndex, 0);
-            index = familyIndex;
-            is_valid = true;
+        VulkanQueue(const vk::raii::Device &device, 
+                    unsigned int familyIndex, 
+                    unsigned int queueIndex = 0) {
+
+            this->queue = vk::raii::Queue(device, familyIndex, queueIndex);
+            this->familyIndex = familyIndex;
+            this->queueIndex = queueIndex;
         }; 
+
+        bool fromSameFamily(const VulkanQueue &other) const {
+            return familyIndex == other.familyIndex;
+        };
+
+        friend std::ostream& operator<<(std::ostream& os, const VulkanQueue &queue) {            
+            return os << "{ family = " << queue.familyIndex
+                        << ", queue = " << queue.queueIndex << " }";                  
+        };
     };
       
     ///////////////////////////////////////////////////////////////////////////
@@ -59,17 +71,17 @@ namespace pro {
         return true;
     };
     
-    inline int findQueueIndex(  vk::raii::PhysicalDevice &physicalDevice,
-                                vk::raii::SurfaceKHR &surface,
-                                const vector<vk::QueueFlagBits> &desiredFlags,
-                                const vector<vk::QueueFlagBits> &avoidFlags,
-                                bool checkForPresent = false) {
+    inline int findQueueFamilyIndex(    vk::raii::PhysicalDevice &physicalDevice,
+                                        vk::raii::SurfaceKHR &surface,
+                                        const vector<vk::QueueFlagBits> &desiredFlags,
+                                        const vector<vk::QueueFlagBits> &avoidFlags,
+                                        bool checkForPresent = false) {
 
         // Get queue family properties
         auto queueFamilies = physicalDevice.getQueueFamilyProperties();
 
         // Cycle through families to find queue matching description
-        int queueIndex = INVALID_QUEUE;
+        int queueFamilyIndex = INVALID_QUEUE;
         //for(auto family : queueFamilies) {
         for(int i = 0; i < queueFamilies.size(); i++) {
             auto family = queueFamilies[i];
@@ -77,21 +89,39 @@ namespace pro {
                 && queueFamilyAvoidsFlags(family, avoidFlags)
                 && (!checkForPresent || physicalDevice.getSurfaceSupportKHR(i, *surface))) {
                 // MATCH!
-                queueIndex = i;
+                queueFamilyIndex = i;
                 break;
             }
         }
 
         // Return what we got (which might be -1)
-        return queueIndex;
+        return queueFamilyIndex;
     };
 
-    inline bool checkForQueue(  vk::raii::PhysicalDevice &physicalDevice,
-                                vk::raii::SurfaceKHR &surface,
-                                const vector<vk::QueueFlagBits> &desiredFlags,
-                                const vector<vk::QueueFlagBits> &avoidFlags,
-                                bool checkForPresent = false) {
-        return (findQueueIndex(physicalDevice, surface, desiredFlags, avoidFlags, checkForPresent)
+    inline bool checkForQueueFamily(    vk::raii::PhysicalDevice &physicalDevice,
+                                        vk::raii::SurfaceKHR &surface,
+                                        const vector<vk::QueueFlagBits> &desiredFlags,
+                                        const vector<vk::QueueFlagBits> &avoidFlags,
+                                        bool checkForPresent = false) {
+        return (findQueueFamilyIndex(physicalDevice, surface, desiredFlags, avoidFlags, checkForPresent)
                  != INVALID_QUEUE);
+    };
+
+    inline uint32_t getQueueCount(  vk::raii::PhysicalDevice &physicalDevice,
+                                    int queueFamilyIndex) {
+
+        // Get queue family properties
+        auto queueFamilies = physicalDevice.getQueueFamilyProperties();
+
+        // Is this out of bounds?
+        if(queueFamilyIndex < 0 || queueFamilyIndex >= queueFamilies.size()) {
+            print_and_throw_error("getQueueCount", "Invalid queue family index: " + queueFamilyIndex);
+        }
+
+        // Get the specific queue family
+        auto family = queueFamilies[queueFamilyIndex];
+
+        // Return the number of queues
+        return family.queueCount;
     };
 }
