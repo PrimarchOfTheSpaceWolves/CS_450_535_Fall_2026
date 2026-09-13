@@ -228,9 +228,9 @@ int main(int argc, char **argv) {
         //createInfo.deviceRequirements.minMinorVersion = 3;
         
         // If you encounter errors with compute and/or transfer queue creation, try these:
-        //createInfo.deviceRequirements.requireComputeQueue = false;
-        //createInfo.deviceRequirements.requireTransferQueue = false;
-
+        //createInfo.deviceRequirements.requireDedicatedComputeQueue = false;
+        //createInfo.deviceRequirements.requireDedicatedTransferQueue = false;
+        
         // For Mac users, uncomment these lines
         //createInfo.instExtensions.push_back(vk::KHRPortabilityEnumerationExtensionName);
         //createInfo.instFlags |= vk::InstanceCreateFlagBits::eEnumeratePortabilityKHR;  

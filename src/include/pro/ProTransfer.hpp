@@ -61,15 +61,10 @@ namespace pro {
 
             // Create pool from transfer queue if possible;
             // otherwise, just use graphics queue
-            useDedicatedTransferQueue = refCore->transferQueue().is_valid;
-            uint32_t chosenQueueIndex = 0;
-            if(useDedicatedTransferQueue) {                
-                chosenQueueIndex = refCore->transferQueue().index;            
-            }
-            else {
-                chosenQueueIndex = refCore->graphicsQueue().index;            
-            }
-            this->transferCommandPool = createCommandPool(refCore->device(), chosenQueueIndex);
+            useDedicatedTransferQueue = refCore->isTransferQueueDedicated();
+            uint32_t chosenQueueFamilyIndex = 0;
+            chosenQueueFamilyIndex = refCore->transferQueue().familyIndex;
+            this->transferCommandPool = createCommandPool(refCore->device(), chosenQueueFamilyIndex);
             
             // Create the fence (but start as UNsignaled)
             this->copyFinished = createFence(refCore->device(), vk::FenceCreateInfo());
@@ -106,8 +101,8 @@ namespace pro {
                     tbarrier.dstStageMask = vk::PipelineStageFlagBits2::eNone;                 
                     tbarrier.dstAccessMask = vk::AccessFlagBits2::eNone;
                                            
-                    tbarrier.srcQueueFamilyIndex = refCore->transferQueue().index;
-                    tbarrier.dstQueueFamilyIndex = refCore->graphicsQueue().index; 
+                    tbarrier.srcQueueFamilyIndex = refCore->transferQueue().familyIndex;
+                    tbarrier.dstQueueFamilyIndex = refCore->graphicsQueue().familyIndex; 
                     tbarrier.buffer = pendingCopy.dstBuffer->buffer();
                     tbarrier.size = vk::WholeSize;
                     srcOwnershipBarriers.push_back(tbarrier);
@@ -121,8 +116,8 @@ namespace pro {
                     gbarrier.dstStageMask = pendingCopy.dstStageMask;    
                     gbarrier.dstAccessMask = pendingCopy.dstAccessMask;                    
                     
-                    gbarrier.srcQueueFamilyIndex = refCore->transferQueue().index;
-                    gbarrier.dstQueueFamilyIndex = refCore->graphicsQueue().index; 
+                    gbarrier.srcQueueFamilyIndex = refCore->transferQueue().familyIndex;
+                    gbarrier.dstQueueFamilyIndex = refCore->graphicsQueue().familyIndex; 
                     gbarrier.buffer = pendingCopy.dstBuffer->buffer();
                     gbarrier.size = vk::WholeSize;                               
                     this->allReceiveBarriers.push_back(gbarrier);                    
@@ -162,13 +157,7 @@ namespace pro {
             submitInfo.pCommandBuffers = &(*transferCommandBuffer);
             
             vk::Queue chosenQueue;
-            if(useDedicatedTransferQueue) {
-                chosenQueue = refCore->transferQueue().queue;
-            }
-            else {
-                chosenQueue = refCore->graphicsQueue().queue;
-            }
-
+            chosenQueue = refCore->transferQueue().queue;            
             chosenQueue.submit(1, &submitInfo, this->copyFinished);
         };
 
@@ -291,7 +280,7 @@ namespace pro {
         void waitUntilCompleted(vector<string> &allCopyIDs) {    
 
             // Make graphics queue pool, buffer, and fence
-            vk::raii::CommandPool blockGraphicsPool = createCommandPool(refCore->device(), refCore->graphicsQueue().index);
+            vk::raii::CommandPool blockGraphicsPool = createCommandPool(refCore->device(), refCore->graphicsQueue().familyIndex);
             vk::raii::CommandBuffer blockGraphicsBuffer = createCommandBuffer(refCore->device(), blockGraphicsPool);
             vk::raii::Fence blockFence = createFence(refCore->device(), vk::FenceCreateInfo());
 
