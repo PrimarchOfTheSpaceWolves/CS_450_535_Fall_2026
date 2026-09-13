@@ -97,6 +97,9 @@ namespace pro {
         vk::VertexInputBindingDescription bindDesc {};
         vector<vk::VertexInputAttributeDescription> attribDesc {};
 
+        // Dynamic state info
+        vector<vk::DynamicState> dynamicStates {};
+
         // Assembly type
         vk::PipelineInputAssemblyStateCreateInfo inputAssemblyInfo {};
 
@@ -140,6 +143,12 @@ namespace pro {
             rasterizerInfo.lineWidth = 1.0f;
             rasterizerInfo.cullMode = vk::CullModeFlagBits::eBack;
             rasterizerInfo.frontFace = vk::FrontFace::eCounterClockwise; 
+
+            // Default dynamic state info
+            dynamicStates = {
+                vk::DynamicState::eViewport,
+                vk::DynamicState::eScissor        
+            };
 
             // Default viewport and scissors
             viewport = makeDefaultViewport(vkCore, flipViewportY);
@@ -225,12 +234,8 @@ namespace pro {
         // Set viewport and scissor info
         vk::PipelineViewportStateCreateInfo viewportStateInfo({}, creationInfo.viewport, creationInfo.scissor);
 
-        // Set dynamic state info
-        vector<vk::DynamicState> dynamicStates = {
-            vk::DynamicState::eViewport,
-            vk::DynamicState::eScissor        
-        };
-        vk::PipelineDynamicStateCreateInfo dynamicStateInfo({}, dynamicStates);  
+        // Set dynamic state info        
+        vk::PipelineDynamicStateCreateInfo dynamicStateInfo({}, creationInfo.dynamicStates);  
 
         // Set all layout info
         vk::PipelineLayoutCreateInfo pipelineLayoutInfo(
