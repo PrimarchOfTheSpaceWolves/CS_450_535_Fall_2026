@@ -27,3 +27,8 @@ This application shows a repeating red pattern that follows the mouse X movement
 
 <img title="SoftwareRenderer screenshot" alt="SoftwareRenderer screenshot" src="./screenshots/SoftwareRenderer.png" width="320">
 
+### ProfExercise02
+
+This application shows a pentagon and quad intersecting it.
+
+<img title="ProfExercise02 screenshot" alt="ProfExercise02 screenshot" src="./screenshots/ProfExercise02.png" width="320">
