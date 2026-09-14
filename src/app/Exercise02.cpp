@@ -259,6 +259,19 @@ int main(int argc, char **argv) {
         };        
         allHostMeshes.push_back(simpleShape);
 
+        pro::HostMesh<ProVertex> secondShape {};
+        secondShape.vertices = {
+            {{-0.75f,   -0.9f,  0.0f},      {0.5,0.5,0.5,1}},
+            {{0.9f,     0.75f,  1.0f},      {0.5,0.5,0.5,1}},
+            {{0.75f,    0.9f,   1.0f},      {0.5,0.5,0.5,1}},
+            {{-0.9f,    -0.75f, 0.0f},      {0.5,0.5,0.5,1}},            
+        };
+        secondShape.indices = { 
+            0, 1, 2, 
+            0, 2, 3
+        };        
+        allHostMeshes.push_back(secondShape);
+
         // Create the Vulkan meshes
         vector<pro::VulkanMesh> allMeshes {};    
         allMeshes.resize(allHostMeshes.size());       
