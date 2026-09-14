@@ -255,7 +255,7 @@ int main(int argc, char **argv) {
             0, 2, 3,
             1, 4, 2,
             3, 2, 5,
-            3, 0, 6 
+            3, 6, 0 
         };        
         allHostMeshes.push_back(simpleShape);
 
