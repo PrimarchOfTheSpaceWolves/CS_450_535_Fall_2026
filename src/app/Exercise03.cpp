@@ -26,7 +26,17 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-    // TODO
+    {
+        pro::VulkanCoreCreateInfo coreCreateInfo {};
+        coreCreateInfo.appName = appName;
+
+        pro::prepareVulkanInitGLFWFunctions(coreCreateInfo, window);
+
+        pro::VulkanCore vkCore(coreCreateInfo);
+
+        
+        // TODO
+    }
 
     glfwDestroyWindow(window);
     glfwTerminate();
