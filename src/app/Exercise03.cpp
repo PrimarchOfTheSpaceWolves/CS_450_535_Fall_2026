@@ -7,7 +7,29 @@ using namespace std;
 int main(int argc, char **argv) {
     cout << "BEGIN VULKAN EXERCISE" << endl;
 
+    if(!glfwInit()) {
+        cerr << "Error: GLFW did not init!" << endl;
+        exit(1);
+    }
+
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    glfwWindowHint(GLFW_RESIZABLE, true);
+
+    string appName = "Exercise03";
+    string windowTitle = appName + ": realemj";
+    GLFWwindow *window = glfwCreateWindow(800, 600, windowTitle.c_str(),
+                                            nullptr, nullptr);
+
+    if(!window) {
+        cerr << "Error: Could not create window!" << endl;
+        glfwTerminate();
+        exit(1);
+    }
+
     // TODO
+
+    glfwDestroyWindow(window);
+    glfwTerminate();
 
     return 0;
 }
