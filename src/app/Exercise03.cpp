@@ -34,6 +34,9 @@ int main(int argc, char **argv) {
 
         pro::VulkanCore vkCore(coreCreateInfo);
 
+        while(!glfwWindowShouldClose(window)) {
+            glfwPollEvents();
+        }
         
         // TODO
     }
