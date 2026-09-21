@@ -4,6 +4,13 @@
 #include "pro/Prometheus.hpp"
 using namespace std;
 
+bool didWindowResize = false;
+
+static void window_resize_callback( GLFWwindow *window, 
+                                    int width, int height) {
+    didWindowResize = true;
+}
+
 int main(int argc, char **argv) {
     cout << "BEGIN VULKAN EXERCISE" << endl;
 
@@ -26,6 +33,8 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
+    glfwSetFramebufferSizeCallback(window, window_resize_callback);
+
     {
         pro::VulkanCoreCreateInfo coreCreateInfo {};
         coreCreateInfo.appName = appName;
@@ -36,6 +45,12 @@ int main(int argc, char **argv) {
 
         while(!glfwWindowShouldClose(window)) {
             glfwPollEvents();
+
+            if(didWindowResize) {
+                cout << "Resized!" << endl;
+                vkCore.doWindowResize();
+                didWindowResize = false;
+            }
         }
         
         // TODO
