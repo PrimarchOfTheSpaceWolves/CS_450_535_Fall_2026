@@ -32,3 +32,7 @@ This application shows a repeating red pattern that follows the mouse X movement
 This application shows a pentagon and quad intersecting it.
 
 <img title="ProfExercise02 screenshot" alt="ProfExercise02 screenshot" src="./screenshots/ProfExercise02.png" width="320">
+
+### ProfExercise03
+
+This application has a bare-bones window with resizing.
