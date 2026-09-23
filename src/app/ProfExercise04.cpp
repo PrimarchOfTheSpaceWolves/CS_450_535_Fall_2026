@@ -43,6 +43,11 @@ int main(int argc, char **argv) {
 
         pro::VulkanCore vkCore(coreCreateInfo);
 
+        pro::CommandData frameCmd = pro::createFrameCommandData(vkCore);
+
+        uint32_t framesRendered = 0;
+        int numberFramesInFlight = 1;
+
         while(!glfwWindowShouldClose(window)) {
             glfwPollEvents();
 
