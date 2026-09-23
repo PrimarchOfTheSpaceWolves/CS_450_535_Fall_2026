@@ -56,12 +56,23 @@ int main(int argc, char **argv) {
                 vkCore.doWindowResize();
                 didWindowResize = false;
             }
+
+            uint32_t flightIndex = framesRendered % numberFramesInFlight;
+            uint32_t swapIndex = pro::acquireNextSwapImage(vkCore, frameCmd);
+
+            // TODO
+
+            pro::submitForFrame(vkCore, frameCmd, swapIndex);
+
+            if(!pro::presentSwapImage(vkCore, swapIndex)) {
+                cerr << "Warning: Present failed." << endl;
+            }
+
+            framesRendered++;
         }
         
-        // TODO
-
         vkCore.device().waitIdle();
-    }
+    } // Cleanup starts here
 
     glfwDestroyWindow(window);
     glfwTerminate();
