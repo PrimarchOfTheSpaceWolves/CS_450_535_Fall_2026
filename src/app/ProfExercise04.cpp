@@ -54,6 +54,8 @@ int main(int argc, char **argv) {
         }
         
         // TODO
+
+        vkCore.device().waitIdle();
     }
 
     glfwDestroyWindow(window);
