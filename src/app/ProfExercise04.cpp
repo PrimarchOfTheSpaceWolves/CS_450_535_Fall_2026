@@ -102,8 +102,10 @@ int main(int argc, char **argv) {
                 vk::QueryResultFlagBits::e64 | vk::QueryResultFlagBits::eWait
             );
             vector<uint64_t> results = poolResult.value;
-            cout << results[0] << " " << results[1] << endl;
-
+            auto props = vkCore.physicalDevice().getProperties();
+            double nsPerTick = props.limits.timestampPeriod;
+            double timePassed = (results[1] - results[0])*nsPerTick;
+            cout << "TIME PASSED: " << timePassed << endl;
         }
         
         vkCore.device().waitIdle();
