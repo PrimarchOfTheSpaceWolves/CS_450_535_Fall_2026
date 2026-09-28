@@ -45,6 +45,19 @@ int main(int argc, char **argv) {
 
         pro::CommandData frameCmd = pro::createFrameCommandData(vkCore);
 
+        pro::VulkanPipelineCreateInfo pipelineCreateInfo(vkCore);
+
+        pipelineCreateInfo.shaderInfo = {
+            pro::VulkanShaderCreateInfo(
+                "build/compiledshaders/" + appName + "/shader.vert.spv",
+                vk::ShaderStageFlagBits::eVertex
+            ),
+            pro::VulkanShaderCreateInfo(
+                "build/compiledshaders/" + appName + "/shader.frag.spv",
+                vk::ShaderStageFlagBits::eFragment
+            )
+        };
+
         uint32_t framesRendered = 0;
         int numberFramesInFlight = 1;
 
