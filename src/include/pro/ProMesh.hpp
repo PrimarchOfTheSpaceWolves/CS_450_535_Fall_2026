@@ -14,10 +14,22 @@ namespace pro {
     };
     
     struct VulkanMesh {
-        VulkanBuffer vertices;
-        VulkanBuffer indices;
+        VulkanBufferPtr vertices_;
+        VulkanBufferPtr indices_;
         unsigned int indexCnt = 0;
         unsigned int vertexCnt = 0;
+
+        const VulkanBuffer& vertices() const noexcept { return *vertices_; };
+        const VulkanBuffer& indices() const noexcept { return *indices_; };
+
+        VulkanBuffer& vertices() noexcept { return *vertices_; };
+        VulkanBuffer& indices() noexcept { return *indices_; };
+
+        const VulkanBufferPtr& verticesPtr() const noexcept { return vertices_; }
+        const VulkanBufferPtr& indicesPtr()  const noexcept { return indices_; }
+
+        VulkanBufferPtr& verticesPtr() noexcept { return vertices_; }
+        VulkanBufferPtr& indicesPtr()  noexcept { return indices_; }
     };
         
     ///////////////////////////////////////////////////////////////////////////
@@ -55,10 +67,10 @@ namespace pro {
 
         // Create vertex buffer and index buffer
         vk::DeviceSize vertBufferSize = sizeof(hostMesh.vertices[0]) * hostMesh.vertices.size();    
-        mesh.vertices = createVulkanBuffer(allocator, vertBufferSize, vertUsageFlags, vmaInfo);
+        mesh.vertices_ = make_shared<VulkanBuffer>(createVulkanBuffer(allocator, vertBufferSize, vertUsageFlags, vmaInfo));
 
         vk::DeviceSize indexBufferSize = sizeof(hostMesh.indices[0]) * hostMesh.indices.size();
-        mesh.indices = createVulkanBuffer(allocator, indexBufferSize, indexUsageFlags, vmaInfo);
+        mesh.indices_ = make_shared<VulkanBuffer>(createVulkanBuffer(allocator, indexBufferSize, indexUsageFlags, vmaInfo));
 
         // Return mesh
         return mesh;
@@ -70,8 +82,8 @@ namespace pro {
                                         HostMesh<T> &hostMesh) {
         
         // Copy to buffers
-        copyToHostVisibleVulkanBuffer(allocator, mesh.vertices, hostMesh.vertices.data());
-        copyToHostVisibleVulkanBuffer(allocator, mesh.indices, hostMesh.indices.data());
+        copyToHostVisibleVulkanBuffer(allocator, mesh.vertices(), hostMesh.vertices.data());
+        copyToHostVisibleVulkanBuffer(allocator, mesh.indices(), hostMesh.indices.data());
         
         // Set index and vertex count
         mesh.indexCnt = hostMesh.indices.size();
@@ -83,12 +95,12 @@ namespace pro {
                                     HostMesh<T> &hostMesh,
                                     vector<PendingBufferCopy> &pendingCopies) {
 
-        pendingCopies.push_back(PendingBufferCopy(  mesh.vertices, 
+        pendingCopies.push_back(PendingBufferCopy(  mesh.verticesPtr(), 
                                                     hostMesh.vertices.data(), 
                                                     vk::PipelineStageFlagBits2::eVertexInput, 
                                                     vk::AccessFlagBits2::eVertexAttributeRead));
 
-        pendingCopies.push_back(PendingBufferCopy(  mesh.indices, 
+        pendingCopies.push_back(PendingBufferCopy(  mesh.indicesPtr(), 
                                                     hostMesh.indices.data(), 
                                                     vk::PipelineStageFlagBits2::eVertexInput, 
                                                     vk::AccessFlagBits2::eIndexRead));
@@ -100,10 +112,10 @@ namespace pro {
 
     void recordDrawVulkanMesh(const vk::raii::CommandBuffer &commandBuffer, VulkanMesh &mesh) {
         
-        vk::Buffer vertexBuffers[] = {mesh.vertices.buffer()};
+        vk::Buffer vertexBuffers[] = {mesh.vertices().buffer()};
         vk::DeviceSize offsets[] = {0};
         commandBuffer.bindVertexBuffers(0, vertexBuffers, offsets);
-        commandBuffer.bindIndexBuffer(mesh.indices.buffer(), 0, vk::IndexType::eUint32);
+        commandBuffer.bindIndexBuffer(mesh.indices().buffer(), 0, vk::IndexType::eUint32);
         
         commandBuffer.drawIndexed(mesh.indexCnt, 1, 0, 0, 0);
     };   
