@@ -36,3 +36,7 @@ This application shows a pentagon and quad intersecting it.
 ### ProfExercise03
 
 This application has a bare-bones window with resizing.
+
+### ProfExercise04
+
+This application adds command recording and does simple timing printout.
