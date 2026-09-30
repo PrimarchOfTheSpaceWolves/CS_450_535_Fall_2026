@@ -75,6 +75,9 @@ int main(int argc, char **argv) {
             )
         };
 
+        pro::VulkanPipelineData pipelineData
+         = pro::createVulkanPipeline(vkCore.device(), pipelineCreateInfo);
+
         uint32_t framesRendered = 0;
         int numberFramesInFlight = 1;
 
