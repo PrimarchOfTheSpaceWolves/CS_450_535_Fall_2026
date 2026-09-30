@@ -109,7 +109,30 @@ int main(int argc, char **argv) {
                 pro::IMAGE_STATE_TYPE::COLOR
             );
 
+            auto colorAtt = pro::createColorAttachment(
+                vkCore.swapchain().swaps[swapIndex].view,
+                {1.0f, 1.0f, 0.0f, 1.0f}
+            );
+
+            vk::RenderingInfoKHR ri {};
+            ri.setRenderArea(vk::Rect2D({0,0}, vkCore.swapchain().extent));
+            ri.setLayerCount(1);
+            ri.setColorAttachments(colorAtt);
+            frameCmd.buffer().beginRendering(ri);
+            frameCmd.buffer().bindPipeline(
+                vk::PipelineBindPoint::eGraphics,
+                pipelineData.pipeline
+            );
+
+            vk::Viewport vps[] = { pro::makeDefaultViewport(vkCore) };
+            frameCmd.buffer().setViewport(0, vps);
+
+            vk::Rect2D scs[] = { pro::makeDefaultScissors(vkCore) };
+            frameCmd.buffer().setScissor(0, scs);
+
             // TODO: Drawing commands
+
+            frameCmd.buffer().endRendering();
 
             pro::performImageTransition(
                 frameCmd.buffer(),
