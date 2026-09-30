@@ -4,6 +4,10 @@
 #include "pro/Prometheus.hpp"
 using namespace std;
 
+struct ForgeVertex {
+    glm::vec3 pos;
+};
+
 bool didWindowResize = false;
 
 static void window_resize_callback( GLFWwindow *window, 
