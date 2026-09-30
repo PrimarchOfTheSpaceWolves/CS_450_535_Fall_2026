@@ -62,6 +62,19 @@ int main(int argc, char **argv) {
             )
         };
 
+        pipelineCreateInfo.bindDesc = vk::VertexInputBindingDescription(
+            0, sizeof(ForgeVertex), vk::VertexInputRate::eVertex
+        );
+
+        pipelineCreateInfo.attribDesc = {
+            vk::VertexInputAttributeDescription(
+                0, // location
+                0, // binding
+                vk::Format::eR32G32B32Sfloat, // (x,y,z)
+                offsetof(ForgeVertex, pos)
+            )
+        };
+
         uint32_t framesRendered = 0;
         int numberFramesInFlight = 1;
 
