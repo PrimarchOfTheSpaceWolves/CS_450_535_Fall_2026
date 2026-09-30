@@ -40,3 +40,7 @@ This application has a bare-bones window with resizing.
 ### ProfExercise04
 
 This application adds command recording and does simple timing printout.
+
+### ProfExercise05
+
+This application adds dynamic rendering and pipeline setup.
