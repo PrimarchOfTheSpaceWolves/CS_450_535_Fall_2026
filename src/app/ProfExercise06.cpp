@@ -78,6 +78,37 @@ int main(int argc, char **argv) {
         pro::VulkanPipelineData pipelineData
          = pro::createVulkanPipeline(vkCore.device(), pipelineCreateInfo);
 
+        vector<pro::HostMesh<ForgeVertex>> allHostMeshes {};
+        pro::HostMesh<ForgeVertex> hostMesh {};
+        hostMesh.vertices = {
+            {{-0.5f, -0.5f, 0.5f}},
+            {{0.5f, -0.5f, 0.5f}},
+            {{0.5f, 0.5f, 0.5f}},
+            {{-0.5f, 0.5f, 0.5f}}
+        };
+        hostMesh.indices = {
+            0,2,3,
+            2,0,1
+        };
+        allHostMeshes.push_back(hostMesh);
+
+        vector<pro::VulkanMesh> allMeshes {};
+        allMeshes.resize(allHostMeshes.size());
+
+        // Host-visible version
+        for(int i = 0; i < allHostMeshes.size(); i++) {
+            allMeshes[i] = pro::createVulkanMesh(
+                vkCore.allocator(),
+                allHostMeshes[i],
+                false
+            );
+            pro::copyToHostVisibleVulkanMesh(
+                vkCore.allocator(),
+                allMeshes[i],
+                allHostMeshes[i]
+            );
+        }
+
         uint32_t framesRendered = 0;
         int numberFramesInFlight = 1;
 
@@ -130,7 +161,9 @@ int main(int argc, char **argv) {
             vk::Rect2D scs[] = { pro::makeDefaultScissors(vkCore) };
             frameCmd.buffer().setScissor(0, scs);
 
-            // TODO: Drawing commands
+            for(int i = 0; i < allMeshes.size(); i++) {
+                pro::recordDrawVulkanMesh(frameCmd.buffer(), allMeshes[i]);
+            }
 
             frameCmd.buffer().endRendering();
 
