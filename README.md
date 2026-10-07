@@ -44,3 +44,7 @@ This application adds command recording and does simple timing printout.
 ### ProfExercise05
 
 This application adds dynamic rendering and pipeline setup.
+
+### ProfExercise06
+
+This application draws a simple mesh (professor edition).
