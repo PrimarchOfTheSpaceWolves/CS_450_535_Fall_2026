@@ -38,6 +38,17 @@ int main(int argc, char **argv) {
     cout << "normA: " << glm::to_string(normA) << endl;
     cout << "normA len: " << anormlen << endl;
 
+    glm::vec3 normB = glm::normalize(b);
+    float dotAB = glm::dot(normA, normB);
+    float degAB = glm::degrees(glm::acos(dotAB));
+    cout << "dotAB: " << dotAB << endl;
+    cout << "degAB: " << degAB << endl;
+
+    glm::vec3 d = {0,0,1};
+    float dotAD = glm::dot(normA, d);
+    float degAD = glm::degrees(glm::acos(dotAD));
+    cout << "dotAD: " << dotAD << endl;
+    cout << "degAD: " << degAD << endl;
 
     cout << "BEGIN VULKAN EXERCISE" << endl;
 
