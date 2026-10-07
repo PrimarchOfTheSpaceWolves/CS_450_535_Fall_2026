@@ -16,6 +16,29 @@ static void window_resize_callback( GLFWwindow *window,
 }
 
 int main(int argc, char **argv) {
+    cout << "BEGIN GLM EXERCISE" << endl;
+    glm::vec3 a = {1,4,0};
+    glm::vec3 b = {2,3,2};
+    cout << "a.x/r: " << a.x << " " << a.r << endl;
+    cout << "a: " << glm::to_string(a) << endl;
+    cout << "b: " << glm::to_string(b) << endl;
+    glm::vec3 c = b - a;
+    cout << "c: " << glm::to_string(c) << endl;
+
+    float alen = glm::length(a);
+    cout << "Length a: " << alen << endl;
+
+    a = 5.0f*a;
+    alen = glm::length(a);
+    cout << "New a: " << glm::to_string(a) << endl;
+    cout << "New length a: " << alen << endl;
+    
+    glm::vec3 normA = glm::normalize(a);
+    float anormlen = glm::length(normA);
+    cout << "normA: " << glm::to_string(normA) << endl;
+    cout << "normA len: " << anormlen << endl;
+
+
     cout << "BEGIN VULKAN EXERCISE" << endl;
 
     if(!glfwInit()) {
