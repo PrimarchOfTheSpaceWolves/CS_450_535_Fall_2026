@@ -50,6 +50,14 @@ int main(int argc, char **argv) {
     cout << "dotAD: " << dotAD << endl;
     cout << "degAD: " << degAD << endl;
 
+    glm::vec3 e = {7,8,0};
+    cout << "a: " << glm::to_string(a) << endl;
+    cout << "e: " << glm::to_string(e) << endl;
+    glm::vec3 crossAE = glm::cross(a,e);
+    glm::vec3 crossEA = glm::cross(e,a);
+    cout << "A x E = " << glm::to_string(crossAE) << endl;
+    cout << "E x A = " << glm::to_string(crossEA) << endl;
+
     cout << "BEGIN VULKAN EXERCISE" << endl;
 
     if(!glfwInit()) {
