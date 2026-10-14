@@ -48,3 +48,7 @@ This application adds dynamic rendering and pipeline setup.
 ### ProfExercise06
 
 This application draws a simple mesh (professor edition).
+
+### ProfExercise07
+
+This application does some experiments with GLM vectors (professor edition).
