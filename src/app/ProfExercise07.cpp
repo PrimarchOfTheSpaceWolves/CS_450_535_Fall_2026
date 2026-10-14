@@ -58,6 +58,26 @@ int main(int argc, char **argv) {
     cout << "A x E = " << glm::to_string(crossAE) << endl;
     cout << "E x A = " << glm::to_string(crossEA) << endl;
 
+    glm::vec3 D = {0,1,-1};
+    D = glm::normalize(D);
+    glm::vec3 W = -D;
+    glm::vec3 T = {0,1,0};
+    glm::vec3 U = glm::normalize(glm::cross(T,W));
+    glm::vec3 V = glm::normalize(glm::cross(W,U));
+    cout << "U = " << glm::to_string(U) << endl;
+    cout << "V = " << glm::to_string(V) << endl;
+    cout << "W = " << glm::to_string(W) << endl;
+    cout << glm::dot(U,V) << " "
+         << glm::dot(U,W) << " "
+         << glm::dot(V,W) << endl;
+
+    glm::vec3 P = {2,0,-3};
+    float u = glm::dot(P,U);
+    float v = glm::dot(P,V);
+    float w = glm::dot(P,W);
+    cout << u << "," << v << "," << w << endl;
+
+
     cout << "BEGIN VULKAN EXERCISE" << endl;
 
     if(!glfwInit()) {
