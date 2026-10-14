@@ -16,6 +16,12 @@ static void window_resize_callback( GLFWwindow *window,
 }
 
 int main(int argc, char **argv) {
+
+    cout << argc << " ARGUMENTS" << endl;
+    for(int i = 0; i < argc; i++) {
+        cout << i << ": " << argv[i] << endl;
+    }
+
     cout << "BEGIN GLM EXERCISE" << endl;
     glm::vec3 a = {1,4,0};
     glm::vec3 b = {2,3,2};
