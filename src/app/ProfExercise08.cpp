@@ -2,6 +2,9 @@
 #include <string>
 #define PRO_USE_GLFW
 #include "pro/Prometheus.hpp"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 using namespace std;
 
 struct ForgeVertex {
@@ -20,6 +23,26 @@ int main(int argc, char **argv) {
     cout << argc << " ARGUMENTS" << endl;
     for(int i = 0; i < argc; i++) {
         cout << i << ": " << argv[i] << endl;
+    }
+
+    Assimp::Importer importer;
+    const aiScene* scene = importer.ReadFile(
+        "sampleData/models/bunnyteatime.glb",
+        aiProcess_Triangulate | aiProcess_FlipUVs |
+        aiProcess_GenNormals | aiProcess_JoinIdenticalVertices
+    );
+
+    if(!scene || 
+        scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE ||
+        !scene->mRootNode
+    ) {
+        cerr << "ERROR: " << importer.GetErrorString() << endl;
+        exit(1);
+    }
+
+    for(unsigned int i = 0; i < scene->mNumMeshes; i++) {
+        cout << "MESH " << i << ":" << endl;
+        cout << "Num verts: " << scene->mMeshes[i]->mNumVertices << endl;
     }
 
     cout << "BEGIN GLM EXERCISE" << endl;
