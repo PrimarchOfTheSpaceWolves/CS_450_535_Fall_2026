@@ -52,3 +52,7 @@ This application draws a simple mesh (professor edition).
 ### ProfExercise07
 
 This application does some experiments with GLM vectors (professor edition).
+
+### ProfExercise08
+
+This application demonstrate loading model data with Assimp (professor edition).
