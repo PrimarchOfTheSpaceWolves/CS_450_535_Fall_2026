@@ -36,3 +36,23 @@ This application shows a pentagon and quad intersecting it.
 ### ProfExercise03
 
 This application has a bare-bones window with resizing.
+
+### ProfExercise04
+
+This application adds command recording and does simple timing printout.
+
+### ProfExercise05
+
+This application adds dynamic rendering and pipeline setup.
+
+### ProfExercise06
+
+This application draws a simple mesh (professor edition).
+
+### ProfExercise07
+
+This application does some experiments with GLM vectors (professor edition).
+
+### ProfExercise08
+
+This application demonstrate loading model data with Assimp (professor edition).
