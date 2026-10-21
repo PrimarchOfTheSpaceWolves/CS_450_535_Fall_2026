@@ -142,6 +142,9 @@ int main(int argc, char **argv) {
     glm::mat3 B = glm::mat3(U,V,W);
     printRM("B", B);
 
+    glm::mat3 Mt = glm::transpose(M);
+    printRM("Mt", Mt);
+
     cout << "BEGIN VULKAN EXERCISE" << endl;
 
     if(!glfwInit()) {
