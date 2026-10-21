@@ -145,6 +145,17 @@ int main(int argc, char **argv) {
     glm::mat3 Mt = glm::transpose(M);
     printRM("Mt", Mt);
 
+    glm::mat3 A = glm::mat3(1,0,0,0,2,0,0,0,1);
+    glm::mat3 C = glm::mat3(0.5,0,0,0,1,0,0,0,1);
+    printRM("A", A);
+    printRM("C", C);
+    glm::mat3 T = C*A;
+    printRM("T", T);
+    glm::vec3 p = glm::vec3(2,4,8);
+    glm::vec3 np = T*p;
+    cout << "p: " << glm::to_string(p) << endl;
+    cout << "np: " << glm::to_string(np) << endl;
+
     cout << "BEGIN VULKAN EXERCISE" << endl;
 
     if(!glfwInit()) {
