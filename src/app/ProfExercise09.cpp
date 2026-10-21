@@ -18,6 +18,26 @@ static void window_resize_callback( GLFWwindow *window,
     didWindowResize = true;
 }
 
+void printRM(string name, glm::mat3 &M) {
+    cout << name << ":" << endl;
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++) {
+            cout << M[j][i] << ", ";
+        }
+        cout << endl;
+    }
+}
+
+void printRM(string name, glm::mat4 &M) {
+    cout << name << ":" << endl;
+    for(int i = 0; i < 4; i++) {
+        for(int j = 0; j < 4; j++) {
+            cout << M[j][i] << ", ";
+        }
+        cout << endl;
+    }
+}
+
 int main(int argc, char **argv) {
 
     cout << argc << " ARGUMENTS" << endl;
