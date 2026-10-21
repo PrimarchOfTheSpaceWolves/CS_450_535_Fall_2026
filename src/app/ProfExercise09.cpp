@@ -18,6 +18,16 @@ static void window_resize_callback( GLFWwindow *window,
     didWindowResize = true;
 }
 
+void printRM(string name, glm::mat2 &M) {
+    cout << name << ":" << endl;
+    for(int i = 0; i < 2; i++) {
+        for(int j = 0; j < 2; j++) {
+            cout << M[j][i] << ", ";
+        }
+        cout << endl;
+    }
+}
+
 void printRM(string name, glm::mat3 &M) {
     cout << name << ":" << endl;
     for(int i = 0; i < 3; i++) {
@@ -155,6 +165,17 @@ int main(int argc, char **argv) {
     glm::vec3 np = T*p;
     cout << "p: " << glm::to_string(p) << endl;
     cout << "np: " << glm::to_string(np) << endl;
+
+    glm::vec2 g = glm::vec2(5,1);
+    glm::vec2 h = glm::vec2(-2,6);
+    glm::mat2 K = glm::mat2(g,h);
+    printRM("K", K);
+    float areaT = glm::determinant(K)/2.0f;
+    cout << "Area triangle: " << areaT << endl;
+    K = glm::mat2(h,g);
+    areaT = glm::determinant(K)/2.0f;
+    cout << "Area triangle now: " << areaT << endl;
+
 
     cout << "BEGIN VULKAN EXERCISE" << endl;
 
