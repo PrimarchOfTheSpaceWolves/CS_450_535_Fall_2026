@@ -40,6 +40,7 @@ void printRM(string name, glm::mat4 &M) {
 
 int main(int argc, char **argv) {
 
+    /*
     cout << argc << " ARGUMENTS" << endl;
     for(int i = 0; i < argc; i++) {
         cout << i << ": " << argv[i] << endl;
@@ -125,7 +126,21 @@ int main(int argc, char **argv) {
     float v = glm::dot(P,V);
     float w = glm::dot(P,W);
     cout << u << "," << v << "," << w << endl;
+    */
 
+    glm::mat3 M = glm::mat3(1,2,3,4,5,6,7,8,9);
+    printRM("M", M);
+    glm::mat3 I = glm::mat3(1.0);
+    glm::mat3 Z = glm::mat3(0.0);
+    glm::mat3 F = glm::mat3(5.0);
+    printRM("I", I);
+    printRM("Z", Z);
+    printRM("F", F);
+    glm::vec3 U = glm::normalize(glm::vec3(1,1,0));
+    glm::vec3 V = glm::normalize(glm::vec3(-1,1,0));
+    glm::vec3 W = glm::normalize(glm::cross(U,V));
+    glm::mat3 B = glm::mat3(U,V,W);
+    printRM("B", B);
 
     cout << "BEGIN VULKAN EXERCISE" << endl;
 
