@@ -176,7 +176,17 @@ int main(int argc, char **argv) {
     areaT = glm::determinant(K)/2.0f;
     cout << "Area triangle now: " << areaT << endl;
 
+    glm::mat3 Q = glm::mat3(3,2,1,
+                            1,3,2,
+                            1,2,3);
 
+    glm::mat3 Qi = glm::inverse(Q);
+
+    printRM("Q", Q);
+    printRM("Qi", Qi);
+    glm::mat3 maybeI = Q*Qi;
+    printRM("Maybe I?", maybeI);
+    
     cout << "BEGIN VULKAN EXERCISE" << endl;
 
     if(!glfwInit()) {
