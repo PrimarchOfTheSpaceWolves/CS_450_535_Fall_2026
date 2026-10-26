@@ -11,6 +11,10 @@ struct ForgeVertex {
     glm::vec3 pos;
 };
 
+struct UniformPush {
+    alignas(16) glm::mat4 modelMat;
+};
+
 bool didWindowResize = false;
 
 static void window_resize_callback( GLFWwindow *window, 
