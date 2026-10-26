@@ -16,6 +16,7 @@ struct UniformPush {
 };
 
 bool didWindowResize = false;
+glm::mat4 modelMat(1.0);
 
 static void window_resize_callback( GLFWwindow *window, 
                                     int width, int height) {
@@ -354,6 +355,15 @@ int main(int argc, char **argv) {
 
             vk::Rect2D scs[] = { pro::makeDefaultScissors(vkCore) };
             frameCmd.buffer().setScissor(0, scs);
+
+            UniformPush pv = {};
+            pv.modelMat = modelMat;
+            frameCmd.buffer().pushConstants(
+                pipelineData.layout,
+                vk::ShaderStageFlagBits::eVertex,
+                0, sizeof(UniformPush),
+                &pv
+            );
 
             for(int i = 0; i < allMeshes.size(); i++) {
                 pro::recordDrawVulkanMesh(frameCmd.buffer(), allMeshes[i]);
