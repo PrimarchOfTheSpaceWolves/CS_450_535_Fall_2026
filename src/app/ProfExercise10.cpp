@@ -48,6 +48,20 @@ void printRM(string name, glm::mat4 &M) {
     }
 }
 
+static void key_callback(GLFWwindow *window, int key, int scancode,
+                        int action, int mods) {
+    if(action == GLFW_PRESS || action == GLFW_REPEAT) {
+        switch(key) {
+            case GLFW_KEY_ESCAPE:
+                glfwSetWindowShouldClose(window, true);
+                break;
+
+            default:
+                break;
+        }
+    }
+}
+
 int main(int argc, char **argv) {
 
     /*
@@ -209,6 +223,7 @@ int main(int argc, char **argv) {
     }
 
     glfwSetFramebufferSizeCallback(window, window_resize_callback);
+    glfwSetKeyCallback(window, key_callback);
 
     {
         pro::VulkanCoreCreateInfo coreCreateInfo {};
