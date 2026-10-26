@@ -56,3 +56,7 @@ This application does some experiments with GLM vectors (professor edition).
 ### ProfExercise08
 
 This application demonstrate loading model data with Assimp (professor edition).
+
+### ProfExercise09
+
+This application plays with GLM matrices (professor edition).
