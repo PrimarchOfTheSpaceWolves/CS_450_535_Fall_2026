@@ -17,6 +17,7 @@ struct UniformPush {
 
 bool didWindowResize = false;
 glm::mat4 modelMat(1.0);
+string tString = "v";
 
 static void window_resize_callback( GLFWwindow *window, 
                                     int width, int height) {
@@ -60,10 +61,26 @@ static void key_callback(GLFWwindow *window, int key, int scancode,
             case GLFW_KEY_ESCAPE:
                 glfwSetWindowShouldClose(window, true);
                 break;
-
+            case GLFW_KEY_SPACE:
+                modelMat = glm::mat4(1.0f);
+                tString = "v";
+                break;
+            case GLFW_KEY_Q:
+                modelMat = glm::rotate(glm::radians(5.0f),
+                                        glm::vec3(0,0,1))*modelMat;
+                tString = "R(+5)*" + tString;
+                break;
+            case GLFW_KEY_E:
+                modelMat = glm::rotate(glm::radians(-5.0f),
+                                        glm::vec3(0,0,1))*modelMat;
+                tString = "R(-5)*" + tString;
+                break;
             default:
                 break;
         }
+
+        printRM("Model:", modelMat);
+        cout << "Transform: " << tString << endl;
     }
 }
 
