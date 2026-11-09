@@ -75,6 +75,22 @@ static void key_callback(GLFWwindow *window, int key, int scancode,
                                         glm::vec3(0,0,1))*modelMat;
                 tString = "R(-5)*" + tString;
                 break;
+            case GLFW_KEY_F:
+                modelMat = glm::scale(glm::vec3(0.8,1,1))*modelMat;
+                tString = "Sx(0.8)*" + tString;
+                break;
+            case GLFW_KEY_G:
+                modelMat = glm::scale(glm::vec3(1.25,1,1))*modelMat;
+                tString = "Sx(1.25)*" + tString;
+                break;
+            case GLFW_KEY_R:
+                modelMat = glm::scale(glm::vec3(1,0.8,1))*modelMat;
+                tString = "Sy(0.8)*" + tString;
+                break;
+            case GLFW_KEY_T:
+                modelMat = glm::scale(glm::vec3(1,1.25,1))*modelMat;
+                tString = "Sy(1.25)*" + tString;
+                break;
             default:
                 break;
         }
