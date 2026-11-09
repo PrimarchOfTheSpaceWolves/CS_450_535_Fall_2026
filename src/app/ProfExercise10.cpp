@@ -56,6 +56,7 @@ void printRM(string name, glm::mat4 &M) {
 
 static void key_callback(GLFWwindow *window, int key, int scancode,
                         int action, int mods) {
+    float angle = 5.0f;
     if(action == GLFW_PRESS || action == GLFW_REPEAT) {
         switch(key) {
             case GLFW_KEY_ESCAPE:
@@ -66,14 +67,14 @@ static void key_callback(GLFWwindow *window, int key, int scancode,
                 tString = "v";
                 break;
             case GLFW_KEY_Q:
-                modelMat = glm::rotate(glm::radians(5.0f),
+                modelMat = glm::rotate(glm::radians(angle),
                                         glm::vec3(0,0,1))*modelMat;
-                tString = "R(+5)*" + tString;
+                tString = "R(+" + to_string(angle) + ")*" + tString;
                 break;
             case GLFW_KEY_E:
-                modelMat = glm::rotate(glm::radians(-5.0f),
+                modelMat = glm::rotate(glm::radians(-angle),
                                         glm::vec3(0,0,1))*modelMat;
-                tString = "R(-5)*" + tString;
+                tString = "R(-" + to_string(angle) + ")*" + tString;
                 break;
             case GLFW_KEY_F:
                 modelMat = glm::scale(glm::vec3(0.8,1,1))*modelMat;
