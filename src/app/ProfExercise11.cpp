@@ -366,22 +366,20 @@ int main(int argc, char **argv) {
         allHostMeshes.push_back(hostMesh);
         */
 
-        pro::HostMesh<ForgeVertex> firstMesh {};
-        glm::vec2 d1(0.5f, 0.5f);
-        float firstZ = 0.5f;
-        glm::vec4 firstColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-
-        firstMesh.vertices = {
-            {{-d1.x, -d1.y, firstZ}, firstColor},
-            {{d1.x, -d1.y, firstZ}, firstColor},
-            {{d1.x, d1.y, firstZ}, firstColor},
-            {{-d1.x, d1.y, firstZ}, firstColor}
-        };
-        firstMesh.indices = {
-            0,2,3,
-            2,0,1
-        };
+        pro::HostMesh<ForgeVertex> firstMesh = makeQuad(
+            glm::vec2(1.0f, 1.0f),
+            glm::vec3(0.0f, 0.0f, 0.5f),
+            glm::vec4(1.0f, 0.0f, 0.0f, 1.0f)
+        );
         allHostMeshes.push_back(firstMesh);
+
+        float offsetZ = 0.2f;
+        pro::HostMesh<ForgeVertex> secondMesh = makeQuad(
+            glm::vec2(1.0f, 0.8f),
+            glm::vec3(0.2f, 0.0f, 0.5f+offsetZ),
+            glm::vec4(0.0f, 1.0f, 0.0f, 1.0f)
+        );
+        allHostMeshes.push_back(secondMesh);
 
         vector<pro::VulkanMesh> allMeshes {};
         allMeshes.resize(allHostMeshes.size());
@@ -436,10 +434,15 @@ int main(int argc, char **argv) {
                 {1.0f, 1.0f, 0.0f, 1.0f}
             );
 
+            auto depthAtt = pro::createDepthAttachment(
+                vkCore.depthImages()[swapIndex].view
+            );
+
             vk::RenderingInfoKHR ri {};
             ri.setRenderArea(vk::Rect2D({0,0}, vkCore.swapchain().extent));
             ri.setLayerCount(1);
             ri.setColorAttachments(colorAtt);
+            ri.setPDepthAttachment(&depthAtt);
             frameCmd.buffer().beginRendering(ri);
             frameCmd.buffer().bindPipeline(
                 vk::PipelineBindPoint::eGraphics,
