@@ -60,3 +60,7 @@ This application demonstrate loading model data with Assimp (professor edition).
 ### ProfExercise09
 
 This application plays with GLM matrices (professor edition).
+
+### ProfExercise10
+
+This application does some basic model transformations (professor edition).
