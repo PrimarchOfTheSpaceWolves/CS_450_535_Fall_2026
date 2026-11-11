@@ -9,6 +9,7 @@ using namespace std;
 
 struct ForgeVertex {
     glm::vec3 pos;
+    glm::vec4 color;
 };
 
 struct UniformPush {
@@ -115,6 +116,26 @@ static void key_callback(GLFWwindow *window, int key, int scancode,
         printRM("Model:", modelMat);
         cout << "Transform: " << tString << endl;
     }
+}
+
+pro::HostMesh<ForgeVertex> makeQuad(glm::vec2 dim, 
+                                    glm::vec3 center,
+                                    glm::vec4 color) {
+    pro::HostMesh<ForgeVertex> firstMesh {};
+    glm::vec2 d1 = dim/2.0f;
+    
+    firstMesh.vertices = {
+        {{-d1.x + center.x, -d1.y + center.y,   center.z}, color},
+        {{d1.x + center.x,  -d1.y + center.y,   center.z}, color},
+        {{d1.x + center.x,  d1.y + center.y,    center.z}, color},
+        {{-d1.x + center.x, d1.y + center.y,    center.z}, color}
+    };
+    firstMesh.indices = {
+        0,2,3,
+        2,0,1
+    };
+
+    return firstMesh;
 }
 
 int main(int argc, char **argv) {
@@ -313,6 +334,12 @@ int main(int argc, char **argv) {
                 0, // binding
                 vk::Format::eR32G32B32Sfloat, // (x,y,z)
                 offsetof(ForgeVertex, pos)
+            ),
+            vk::VertexInputAttributeDescription(
+                1, // location
+                0, // binding
+                vk::Format::eR32G32B32A32Sfloat, // (r,g,b,a)
+                offsetof(ForgeVertex, color)
             )
         };
 
@@ -324,6 +351,7 @@ int main(int argc, char **argv) {
          = pro::createVulkanPipeline(vkCore.device(), pipelineCreateInfo);
 
         vector<pro::HostMesh<ForgeVertex>> allHostMeshes {};
+        /*
         pro::HostMesh<ForgeVertex> hostMesh {};
         hostMesh.vertices = {
             {{-0.5f, -0.5f, 0.5f}},
@@ -336,6 +364,24 @@ int main(int argc, char **argv) {
             2,0,1
         };
         allHostMeshes.push_back(hostMesh);
+        */
+
+        pro::HostMesh<ForgeVertex> firstMesh {};
+        glm::vec2 d1(0.5f, 0.5f);
+        float firstZ = 0.5f;
+        glm::vec4 firstColor = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+
+        firstMesh.vertices = {
+            {{-d1.x, -d1.y, firstZ}, firstColor},
+            {{d1.x, -d1.y, firstZ}, firstColor},
+            {{d1.x, d1.y, firstZ}, firstColor},
+            {{-d1.x, d1.y, firstZ}, firstColor}
+        };
+        firstMesh.indices = {
+            0,2,3,
+            2,0,1
+        };
+        allHostMeshes.push_back(firstMesh);
 
         vector<pro::VulkanMesh> allMeshes {};
         allMeshes.resize(allHostMeshes.size());
