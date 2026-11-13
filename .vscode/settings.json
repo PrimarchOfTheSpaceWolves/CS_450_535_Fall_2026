@@ -1,0 +1,4 @@
+{
+    "glsllint.glslangValidatorArgs": ["-V"],
+    "shaderc-lint.glslcArgs": "--target-env=vulkan"
+}
