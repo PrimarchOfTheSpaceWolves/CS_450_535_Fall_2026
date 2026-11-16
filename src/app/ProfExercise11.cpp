@@ -412,6 +412,12 @@ int main(int argc, char **argv) {
         qi.queryCount = 2;
         auto qPool = vk::raii::QueryPool(vkCore.device(), qi);
 
+        auto uboVertData = pro::createVulkanBuffer(
+            vkCore.allocator(), 
+            sizeof(UBOVertex),
+            vk::BufferUsageFlagBits::eUniformBuffer,
+            pro::createVMAHostVisibleInfo());
+
         while(!glfwWindowShouldClose(window)) {
             glfwPollEvents();
 
