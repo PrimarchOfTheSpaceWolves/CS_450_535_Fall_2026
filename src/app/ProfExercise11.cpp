@@ -26,6 +26,10 @@ glm::mat4 modelMat(1.0);
 string tString = "v";
 UBOVertex uboVertHost {};
 
+glm::vec3 camEye = {1.0f, 0.0f, -1.0f};
+glm::vec3 camCenter = {0.0f, 0.0f, 0.0f};
+glm::vec3 camUp = {0.0f, 1.0f, 0.0f};
+
 static void window_resize_callback( GLFWwindow *window, 
                                     int width, int height) {
     didWindowResize = true;
@@ -503,7 +507,7 @@ int main(int argc, char **argv) {
                 &pv
             );
 
-            // TODO: View and projection updates
+            uboVertHost.viewMat = glm::lookAt(camEye, camCenter, camUp);
 
             pro::copyToHostVisibleVulkanBuffer(
                 vkCore.allocator(),
