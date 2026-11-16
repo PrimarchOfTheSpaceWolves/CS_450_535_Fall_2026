@@ -353,6 +353,22 @@ int main(int argc, char **argv) {
             {vk::ShaderStageFlagBits::eVertex, 0, sizeof(UniformPush)}
         };
 
+        pro::DescriptorSetLayoutPack layoutPack = 
+            pro::DescriptorSetLayoutPack(
+                vkCore.device(),
+                {
+                    {
+                        vk::DescriptorSetLayoutBinding(
+                            0, vk::DescriptorType::eUniformBuffer,
+                            1, vk::ShaderStageFlagBits::eVertex
+                        )
+                    }
+                }
+            );
+
+        pipelineCreateInfo.allDescSetLayouts
+        = pro::extractLayoutsOnly(layoutPack.data());
+
         pro::VulkanPipelineData pipelineData
          = pro::createVulkanPipeline(vkCore.device(), pipelineCreateInfo);
 
@@ -418,6 +434,17 @@ int main(int argc, char **argv) {
             vk::BufferUsageFlagBits::eUniformBuffer,
             pro::createVMAHostVisibleInfo());
 
+        pro::DescriptorSetPack descSetPack
+         = { vkCore.device(), layoutPack.data() };
+
+        descSetPack.updateBuffer(
+            vkCore.device(),
+            0,      // set
+            0,      // binding
+            uboVertData,
+            vk::DescriptorType::eUniformBuffer
+        ); 
+
         while(!glfwWindowShouldClose(window)) {
             glfwPollEvents();
 
@@ -474,6 +501,18 @@ int main(int argc, char **argv) {
                 vk::ShaderStageFlagBits::eVertex,
                 0, sizeof(UniformPush),
                 &pv
+            );
+
+            // TODO: View and projection updates
+
+            pro::copyToHostVisibleVulkanBuffer(
+                vkCore.allocator(),
+                uboVertData, &uboVertHost);
+
+            frameCmd.buffer().bindDescriptorSets(
+                vk::PipelineBindPoint::eGraphics,
+                *pipelineData.layout,
+                0, descSetPack.sets(), nullptr
             );
 
             for(int i = 0; i < allMeshes.size(); i++) {
