@@ -16,9 +16,15 @@ struct UniformPush {
     alignas(16) glm::mat4 modelMat;
 };
 
+struct UBOVertex {
+    alignas(16) glm::mat4 viewMat;
+    alignas(16) glm::mat4 projMat;
+};
+
 bool didWindowResize = false;
 glm::mat4 modelMat(1.0);
 string tString = "v";
+UBOVertex uboVertHost {};
 
 static void window_resize_callback( GLFWwindow *window, 
                                     int width, int height) {
