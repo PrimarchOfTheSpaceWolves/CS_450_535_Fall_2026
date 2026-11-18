@@ -535,7 +535,8 @@ int main(int argc, char **argv) {
             float aspectRatio = w/h;
             float near = 0.01f;
             float far = 20.0f;
-            uboVertHost.projMat = glm::perspective(fov, aspectRatio, near, far);  
+            //uboVertHost.projMat = glm::perspective(fov, aspectRatio, near, far);  
+            uboVertHost.projMat = glm::infinitePerspective(fov, aspectRatio, near);
 
             pro::copyToHostVisibleVulkanBuffer(
                 vkCore.allocator(),
