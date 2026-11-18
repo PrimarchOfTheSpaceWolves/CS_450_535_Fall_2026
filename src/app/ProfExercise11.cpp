@@ -26,7 +26,7 @@ glm::mat4 modelMat(1.0);
 string tString = "v";
 UBOVertex uboVertHost {};
 
-glm::vec3 camEye = {1.0f, 0.0f, -1.0f};
+glm::vec3 camEye = {0.0f, 0.0f, 2.0f};
 glm::vec3 camCenter = {0.0f, 0.0f, 0.0f};
 glm::vec3 camUp = {0.0f, 1.0f, 0.0f};
 
@@ -68,6 +68,7 @@ void printRM(string name, glm::mat4 &M) {
 static void key_callback(GLFWwindow *window, int key, int scancode,
                         int action, int mods) {
     float angle = 5.0f;
+    float speed = 0.1f;
     if(action == GLFW_PRESS || action == GLFW_REPEAT) {
         switch(key) {
             case GLFW_KEY_ESCAPE:
@@ -128,6 +129,14 @@ static void key_callback(GLFWwindow *window, int key, int scancode,
                 modelMat = glm::rotate(glm::radians(-angle),
                                         glm::vec3(0,1,0))*modelMat;
                 tString = "Ry(-" + to_string(angle) + ")*" + tString;
+                break;
+            case GLFW_KEY_K:
+                camEye.z += speed;
+                camCenter.z += speed;
+                break;
+            case GLFW_KEY_I:
+                camEye.z -= speed;
+                camCenter.z -= speed;
                 break;
             default:
                 break;
@@ -411,7 +420,7 @@ int main(int argc, char **argv) {
         );
         allHostMeshes.push_back(firstMesh);
 
-        float offsetZ = 0.2f;
+        float offsetZ = 0.0001f; // 0.2f;
         pro::HostMesh<ForgeVertex> secondMesh = makeQuad(
             glm::vec2(1.0f, 0.8f),
             glm::vec3(0.2f, 0.0f, 0.5f+offsetZ),
@@ -525,7 +534,7 @@ int main(int argc, char **argv) {
             float h = ((float)vkCore.swapchain().extent.height);
             float aspectRatio = w/h;
             float near = 0.01f;
-            float far = 1000.0f;
+            float far = 20.0f;
             uboVertHost.projMat = glm::perspective(fov, aspectRatio, near, far);  
 
             pro::copyToHostVisibleVulkanBuffer(
