@@ -18,7 +18,7 @@ void main() {
     //gl_Position = vec4(pos, 1.0f);
 
     vec4 pos = vec4(pos, 1.0f);
-    pos = ubo.viewMat * pc.modelMat * pos;
+    pos = ubo.projMat * ubo.viewMat * pc.modelMat * pos;
     gl_Position = pos;
 
     interColor = color;

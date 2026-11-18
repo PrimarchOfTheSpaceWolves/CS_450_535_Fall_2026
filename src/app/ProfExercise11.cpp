@@ -119,6 +119,16 @@ static void key_callback(GLFWwindow *window, int key, int scancode,
                 modelMat = glm::translate(glm::vec3(-0.1,0,0))*modelMat;
                 tString = "Tx(-0.1)*" + tString;
                 break;
+            case GLFW_KEY_Z:
+                modelMat = glm::rotate(glm::radians(angle),
+                                        glm::vec3(0,1,0))*modelMat;
+                tString = "Ry(+" + to_string(angle) + ")*" + tString;
+                break;
+            case GLFW_KEY_C:
+                modelMat = glm::rotate(glm::radians(-angle),
+                                        glm::vec3(0,1,0))*modelMat;
+                tString = "Ry(-" + to_string(angle) + ")*" + tString;
+                break;
             default:
                 break;
         }
@@ -373,6 +383,8 @@ int main(int argc, char **argv) {
         pipelineCreateInfo.allDescSetLayouts
         = pro::extractLayoutsOnly(layoutPack.data());
 
+        pipelineCreateInfo.rasterizerInfo.cullMode = vk::CullModeFlagBits::eNone;
+
         pro::VulkanPipelineData pipelineData
          = pro::createVulkanPipeline(vkCore.device(), pipelineCreateInfo);
 
@@ -508,6 +520,13 @@ int main(int argc, char **argv) {
             );
 
             uboVertHost.viewMat = glm::lookAt(camEye, camCenter, camUp);
+            float fov = glm::radians(90.0f);
+            float w = ((float)vkCore.swapchain().extent.width);
+            float h = ((float)vkCore.swapchain().extent.height);
+            float aspectRatio = w/h;
+            float near = 0.01f;
+            float far = 1000.0f;
+            uboVertHost.projMat = glm::perspective(fov, aspectRatio, near, far);  
 
             pro::copyToHostVisibleVulkanBuffer(
                 vkCore.allocator(),
