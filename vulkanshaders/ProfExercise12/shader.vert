@@ -2,8 +2,10 @@
 
 layout(location = 0) in vec3 pos;
 layout(location = 1) in vec4 color;
+layout(location = 2) in vec3 normal;
 
 layout(location = 0) out vec4 interColor;
+layout(location = 1) out vec3 interNormal;
 
 layout(push_constant) uniform PushConstants {
     mat4 modelMat;
@@ -22,4 +24,7 @@ void main() {
     gl_Position = pos;
 
     interColor = color;
+
+    mat3 normMat = transpose(inverse(mat3(pc.modelMat)));
+    interNormal = normMat*normal;
 }

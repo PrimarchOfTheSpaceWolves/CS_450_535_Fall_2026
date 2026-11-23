@@ -8,8 +8,17 @@
 using namespace std;
 
 struct ForgeVertex {
-    glm::vec3 pos;
-    glm::vec4 color;
+    glm::vec3 pos = glm::vec3(0,0,0);
+    glm::vec4 color = glm::vec4(1,1,1,1);
+    glm::vec3 normal = glm::vec3(0,0,0);
+
+    ForgeVertex() {};
+    ForgeVertex(glm::vec3 p) { pos = p; };
+    ForgeVertex(glm::vec3 p, glm::vec4 c, glm::vec3 n) {
+        pos = p;
+        color = c;
+        normal = n;
+    };
 };
 
 struct UniformPush {
@@ -152,12 +161,13 @@ pro::HostMesh<ForgeVertex> makeQuad(glm::vec2 dim,
                                     glm::vec4 color) {
     pro::HostMesh<ForgeVertex> firstMesh {};
     glm::vec2 d1 = dim/2.0f;
+    glm::vec3 n = glm::vec3(0,0,-1);
     
     firstMesh.vertices = {
-        {{-d1.x + center.x, -d1.y + center.y,   center.z}, color},
-        {{d1.x + center.x,  -d1.y + center.y,   center.z}, color},
-        {{d1.x + center.x,  d1.y + center.y,    center.z}, color},
-        {{-d1.x + center.x, d1.y + center.y,    center.z}, color}
+        {{-d1.x + center.x, -d1.y + center.y,   center.z}, color, n},
+        {{d1.x + center.x,  -d1.y + center.y,   center.z}, color, n},
+        {{d1.x + center.x,  d1.y + center.y,    center.z}, color, n},
+        {{-d1.x + center.x, d1.y + center.y,    center.z}, color, n}
     };
     firstMesh.indices = {
         0,2,3,
@@ -369,6 +379,12 @@ int main(int argc, char **argv) {
                 0, // binding
                 vk::Format::eR32G32B32A32Sfloat, // (r,g,b,a)
                 offsetof(ForgeVertex, color)
+            ),
+            vk::VertexInputAttributeDescription(
+                2, // location
+                0, // binding
+                vk::Format::eR32G32B32Sfloat, // (x,y,z)
+                offsetof(ForgeVertex, normal)
             )
         };
 
