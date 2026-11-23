@@ -64,3 +64,7 @@ This application plays with GLM matrices (professor edition).
 ### ProfExercise10
 
 This application does some basic model transformations (professor edition).
+
+### ProfExercise11
+
+This application adds view and projection matrices (professor edition).
