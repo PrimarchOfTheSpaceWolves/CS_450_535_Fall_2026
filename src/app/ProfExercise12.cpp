@@ -35,7 +35,7 @@ glm::mat4 modelMat(1.0);
 string tString = "v";
 UBOVertex uboVertHost {};
 
-glm::vec3 camEye = {0.0f, 0.0f, 2.0f};
+glm::vec3 camEye = {-1.0f, 1.0f, 1.0f};
 glm::vec3 camCenter = {0.0f, 0.0f, 0.0f};
 glm::vec3 camUp = {0.0f, 1.0f, 0.0f};
 
@@ -175,6 +175,37 @@ pro::HostMesh<ForgeVertex> makeQuad(glm::vec2 dim,
     };
 
     return firstMesh;
+}
+
+pro::HostMesh<ForgeVertex> makeCylinder(
+    float length, float radius, int faceCnt
+) {
+    pro::HostMesh<ForgeVertex> mesh {};
+
+    float angleInc = glm::radians(360.0 / faceCnt);
+    float hl = length/2.0f;
+    glm::vec4 red = glm::vec4(1,0,0,1);
+    glm::vec4 green = glm::vec4(0,1,0,1);
+    int maxV = 2*faceCnt;
+
+    for(int i = 0; i < faceCnt; i++) {
+        float angle = i*angleInc;
+        glm::vec3 p1 = {-hl, radius*sin(angle), radius*cos(angle)};
+        glm::vec3 p2 = {+hl, radius*sin(angle), radius*cos(angle)};
+        mesh.vertices.push_back({p1, red, {0,0,0}});
+        mesh.vertices.push_back({p2, green, {0,0,0}});
+
+        int bi = i*2;
+        mesh.indices.push_back(bi);
+        mesh.indices.push_back(bi+1);
+        mesh.indices.push_back((bi+2)%maxV);
+
+        mesh.indices.push_back(bi+1);
+        mesh.indices.push_back((bi+3)%maxV);
+        mesh.indices.push_back((bi+2)%maxV);
+    }
+
+    return mesh;
 }
 
 int main(int argc, char **argv) {
@@ -431,6 +462,7 @@ int main(int argc, char **argv) {
         allHostMeshes.push_back(hostMesh);
         */
 
+        /*
         pro::HostMesh<ForgeVertex> firstMesh = makeQuad(
             glm::vec2(1.0f, 1.0f),
             glm::vec3(0.0f, 0.0f, 0.5f),
@@ -445,6 +477,10 @@ int main(int argc, char **argv) {
             glm::vec4(0.0f, 1.0f, 0.0f, 1.0f)
         );
         allHostMeshes.push_back(secondMesh);
+        */
+
+        auto cylinder = makeCylinder(1.0f, 0.5f, 10);
+        allHostMeshes.push_back(cylinder);
 
         vector<pro::VulkanMesh> allMeshes {};
         allMeshes.resize(allHostMeshes.size());

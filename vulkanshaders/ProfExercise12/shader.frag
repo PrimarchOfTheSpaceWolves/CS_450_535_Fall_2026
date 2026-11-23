@@ -8,5 +8,6 @@ layout(location = 1) in vec3 interNormal;
 void main() {
     vec3 N = normalize(interNormal);
 
-    out_color = vec4(abs(N), 1);
+    //out_color = vec4(abs(N), 1);
+    out_color = interColor;
 }
