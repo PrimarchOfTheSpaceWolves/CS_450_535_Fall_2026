@@ -393,6 +393,8 @@ int main(int argc, char **argv) {
         = pro::extractLayoutsOnly(layoutPack.data());
 
         pipelineCreateInfo.rasterizerInfo.cullMode = vk::CullModeFlagBits::eNone;
+        pipelineCreateInfo.depthStencilInfo.depthCompareOp
+        = vk::CompareOp::eGreater;
 
         pro::VulkanPipelineData pipelineData
          = pro::createVulkanPipeline(vkCore.device(), pipelineCreateInfo);
@@ -499,7 +501,8 @@ int main(int argc, char **argv) {
             );
 
             auto depthAtt = pro::createDepthAttachment(
-                vkCore.depthImages()[swapIndex].view
+                vkCore.depthImages()[swapIndex].view,
+                vk::ClearDepthStencilValue{0.0f, 0}
             );
 
             vk::RenderingInfoKHR ri {};
@@ -537,6 +540,8 @@ int main(int argc, char **argv) {
             float far = 20.0f;
             //uboVertHost.projMat = glm::perspective(fov, aspectRatio, near, far);  
             uboVertHost.projMat = glm::infinitePerspective(fov, aspectRatio, near);
+            uboVertHost.projMat[2][2] = 0.0f;
+            uboVertHost.projMat[3][2] = near;
 
             pro::copyToHostVisibleVulkanBuffer(
                 vkCore.allocator(),
